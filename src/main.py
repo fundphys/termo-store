@@ -16,22 +16,23 @@ try:
     dt = dome_temperatures.read_values(100)
     index = dt.index.min() +  (dt.index.max() - dt.index.min()) / 2
     data = pd.DataFrame([dt.mean()], index=[index])
-    print(data)
+    #print(data)
 except:
     pass
 
-#json_body = jsonify_data(data, controller_type, controller_ip)
-#client = InfluxDBClient('192.168.15.57', 8086)
-#client.drop_database('temperatures'
-#client.create_database('temperatures')
-#client.switch_database('temperatures')
-#client.write_points(json_body):
+json_body = jsonify_data(data, controller_type, controller_ip)
+client = InfluxDBClient('192.168.15.57', 8086)
+#client.drop_database('temperatures')
+client.create_database('temperatures')
+client.switch_database('temperatures')
+client.write_points(json_body)
 
+#print(json_body)
 
-#result = client.query("""select temperture from "temperatures"."autogen"."temperatures";""")
-#result = client.query("""select (data * 0.5) + 5 from "temperatures"."autogen"."temperatures" where "medium" = 'steel' ;""")
-#print("Result: {}".format(result.raw))
-
+result = client.query("""select temperture, channel from "temperatures"."autogen"."temperatures";""")
+#result = client.query("""select temperature from "temperatures"."autogen"."temperatures" where "medium" = 'air' ;""")
+print("Result: {}".format(result.raw))
 
 # print(client.get_list_database())
 # client.drop_database("pyexample")
+
