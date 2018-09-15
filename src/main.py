@@ -27,7 +27,7 @@ client.create_database('temperatures')
 client.switch_database('temperatures')
 client.write_points(json_body)
 
-#print(json_body)
+print(json_body)
 
 result = client.query("""select temperture, channel from "temperatures"."autogen"."temperatures";""")
 #result = client.query("""select temperature from "temperatures"."autogen"."temperatures" where "medium" = 'air' ;""")
