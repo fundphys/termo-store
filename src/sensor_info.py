@@ -2,36 +2,39 @@ def jsonify_data(data, controller_type, controller_ip):
     if controller_type == "PET7015":
         if controller_ip == "192.168.15.71":
             return [{
-                        "measurement": "temperatures",
+                        "measurement": "raw",
                         "tags": {
                             "controller": controller_type,
                             "controller_ip": controller_ip,
-                            "location": "dome",
-                            "medium": "air",
-                            "channel": 1 
                         },
                         "time": data.ch_1.index[0],
                         "fields": {
-                            "data": data.ch_1[0],
-                            "temperture": 0.018497 * data.ch_1[0] + 0.14152
-                        },
+                                "ch_1": data.ch_1[0],
+                                "ch_2": data.ch_2[0],
+                                "ch_3": data.ch_3[0],
+                                "ch_4": data.ch_4[0],
+                                "ch_5": data.ch_5[0],
+                                "ch_6": data.ch_6[0],
+                                "ch_7": data.ch_7[0],
+                        }
                     },
                     {
-                        "measurement": "temperatures",
+                        "measurement": "temperature",
                         "tags": {
                             "controller": controller_type,
                             "controller_ip": controller_ip,
-                            "location": "dome",
-                            "medium": "air",
-                            "channel": 2
                         },
                         "time": data.ch_1.index[0],
                         "fields": {
-                            "data": data.ch_2[0],
-                            "temperture": 0.018273 * data.ch_2[0] + 0.2538
-                        },
+                                "t1": data.ch_1[0] * 0.018497 + 0.14152,
+                                "t2": data.ch_2[0] * 0.018273 + 0.2538,
+                                "t3": data.ch_3[0] * 0.018476 + 0.48769,
+                                "t4": data.ch_4[0] * 0.018571 + 0.63772,
+                                "t5": data.ch_5[0] * 0.018561 +  0.47769,
+                                "t6": data.ch_6[0] * 0,
+                                "t7": data.ch_7[0] * 0.018556 + -0.062518
+                        }
                     },
-
                     ]
 
         elif controller_ip == "192.168.15.72":

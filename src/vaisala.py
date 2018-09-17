@@ -20,28 +20,6 @@ import socket
 #777 GET TREND
 #777 OK TEMP=-1.6 WIND=-1.5 WIND_DIR=12 RH=-3 DEW_P=-1.6 PRESS=-0.3
 
-def main():
-    ws = WEATHER_SOURCE('192.168.10.8', 16303)
-    data = ws.request("777 get data")
-    ws.parse_answer(data)
-    data = ws.request("777 get wind")
-    ws.parse_answer(data)
-    data = ws.request("777 get water")
-    ws.parse_answer(data)
-    ws.jsonify_data()
-    
-    try:
-        client = InfluxDBClient('192.168.15.57', 8086)
-    except Exception as e:
-        print("Unable to connect to InfluxDB {}".format(e))
-
-
-    #client.drop_database('weather')
-    #client.create_database('weather')
-    client.switch_database('weather')
-    client.write_points(ws.json)
-
-
 class WEATHER_SOURCE(object):
     def __init__(self, ip, port):
         self.ip = ip
@@ -78,22 +56,46 @@ class WEATHER_SOURCE(object):
         else:
             return None
 
-
     def parse_answer(self, answer):
-        for item in [_ for _ in answer.replace("\n", "").split(" ") if "=" in _ ]:
-            key = item.split("=")[0]
-            value = float(item.split("=")[1])
+        for key, value in [(_.split("=")[0], float(_.split("=")[1])) for _ in answer.replace("\n", "").split(" ") if "=" in _ ]:
             if not key in self.meteo_data:
                 self.meteo_data[key] = value
 
     def jsonify_data(self):
-        self.json = [{
+        self.json_body = [{
             "measurement": "weather",
             "tags": { "station": "vaisala", },
             "time": str(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')),
             "fields": self.meteo_data, 
         }]
                 
+
+def main():
+    ws = WEATHER_SOURCE('192.168.10.8', 16303)
+
+    data = ws.request("777 get data")
+    ws.parse_answer(data)
+
+    data = ws.request("777 get wind")
+    ws.parse_answer(data)
+
+    data = ws.request("777 get water")
+    ws.parse_answer(data)
+
+    ws.jsonify_data()
+    
+    try:
+        client = InfluxDBClient('192.168.15.57', 8086)
+    except Exception as e:
+        print("Unable to connect to InfluxDB {}".format(e))
+        exit(-5)
+
+    #client.drop_database('weather')
+    #client.create_database('weather')
+    
+    client.switch_database('weather')
+    client.write_points(ws.json_body)
+
 
 if __name__ == '__main__':
         main()
