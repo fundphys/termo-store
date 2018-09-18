@@ -24,7 +24,6 @@ class china_controller():
         data = dict()
         for key in self.columns_name:
             data[key] = []
-    
         for i in range(n_values):
             try:
                 raw = []
@@ -33,7 +32,8 @@ class china_controller():
                     answer = self.tn.read_until(b"@", 1).decode('ascii').replace("=", "").replace("@", "")
                     raw.append(float(answer))
                 timestamps.append(datetime.utcnow())
-                
+                print(raw)
+
                 for i in range(len(self.columns_name)):
                     data[self.columns_name[i]].append(raw[i])
 
