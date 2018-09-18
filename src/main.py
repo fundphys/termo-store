@@ -26,6 +26,7 @@ try:
         print(dt.index.max() - dt.index.min())
 
 except Exception as e:
+    print("err")
     print(e)
 
 #print(json_body)
