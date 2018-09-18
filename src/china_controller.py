@@ -4,6 +4,9 @@ import socket
 from datetime import datetime
 import pandas as pd
 from epics import caput
+from sensor_info import jsonify_data
+from influxdb import DataFrameClient
+from influxdb import InfluxDBClient
 
 class china_controller():
     def __init__(self, ip_address, port):
@@ -65,7 +68,16 @@ def main():
         caput('TERMO:BASE_T1', data.ch_12)
     except Exception as e:
         print(e)
-        return None
+    try:
+        client = InfluxDBClient('192.168.15.57', 8086)
+        json_body = jsonify_data(data, "CHINA", controller.ip_addres)
+        client.drop_database('china_temperatures')
+        client.create_database('china_temperatures')
+        client.switch_database('china_temperatures')
+        client.write_points(json_body)
+
+    except Exception as e:
+        print(e)
 
     return None
 
