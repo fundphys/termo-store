@@ -22,7 +22,7 @@ class china_controller():
     def read_values(self, n_values):
         timestamps = []
         data = dict()
-        for key in self.channels_list:
+        for key in self.columns_name:
             data[key] = []
     
         for i in range(n_values):
@@ -31,13 +31,10 @@ class china_controller():
                 for ch in self.channels_list:
                     self.tn.write(ch.encode('ascii') + b'\r')
                     answer = self.tn.read_until(b"@", 1).decode('ascii').replace("=", "").replace("@", "")
-                    print(answer)
                     raw.append(float(answer))
-                
-                print(raw)
                 timestamps.append(datetime.utcnow())
                 
-                for i in range(len(self.channels_list)):
+                for i in range(len(self.columns_name)):
                     data[self.columns_name[i]].append(raw[i])
 
             except Exception as e:
@@ -50,8 +47,8 @@ class china_controller():
 
 def main():
     controller = china_controller( "192.168.15.22", "10001")
-    #values = controller.read_values(2)
-    #print(values)
+    dt = controller.read_values(2)
+    print(dt)
     return None
 
 
