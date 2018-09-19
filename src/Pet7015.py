@@ -35,6 +35,7 @@ class PET7015:
             self.master.set_timeout(self.timeout)
         except Exception as e:
             print("Exception in PET7015 class constructor\n{}".format(e))
+            exit(-1)
 
     def set_timeout(self, timeout):
         try:
@@ -42,6 +43,7 @@ class PET7015:
             self.timeout = 1.0
         except Exception as e:
             print("Exception in PET7015 class set_timeout method\n{}".format(e))
+            exit(-2)
 
     def read_values(self, n_values):
         columns_name=["ch_1","ch_2","ch_3","ch_4","ch_5","ch_6","ch_7"]
@@ -59,7 +61,7 @@ class PET7015:
 
             except Exception as e:
                 print(e)
-                return None
+                exit(-3)
 
         df = pd.DataFrame(data, index=timestamps)
         df.index.name = "timestamp"

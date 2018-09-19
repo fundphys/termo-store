@@ -51,7 +51,7 @@ def jsonify_data(data, controller_type, controller_ip):
                 "controller": controller_type,
                 "controller_ip": controller_ip,
             },
-            "time": data.ch_1.index[0],
+            "time": data.ch_01.index[0],
             "fields": {
                 "ch_1": data.ch_01[0],
                 "ch_2": data.ch_02[0],

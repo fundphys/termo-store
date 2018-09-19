@@ -32,7 +32,7 @@ class china_controller():
                 raw = []
                 for ch in self.channels_list:
                         self.tn.write(ch.encode('ascii') + b'\r')
-                        answer = self.tn.read_until(b"@", 1).decode('ascii').replace("=", "").replace("@", "")
+                        answer = self.tn.read_until(b"@", 1).decode('ascii').replace("=", "").replace("@", "").replace("\r", "").replace("B", "")
                         raw.append(float(answer))
                 timestamps.append(datetime.utcnow())
                 
@@ -71,8 +71,8 @@ def main():
     try:
         client = InfluxDBClient('192.168.15.57', 8086)
         json_body = jsonify_data(data, "CHINA", controller.ip_addres)
-        client.drop_database('china_temperatures')
-        client.create_database('china_temperatures')
+        #client.drop_database('china_temperatures')
+        #client.create_database('china_temperatures')
         client.switch_database('china_temperatures')
         client.write_points(json_body)
 
